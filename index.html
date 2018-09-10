@@ -12,24 +12,40 @@
 <body>
   <header>
     <nav>
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1>Restaurant Reviews</h1>
     </nav>
   </header>
 
-  <main id="maincontent">
+  <main id="maincontent" role="main">
     <section id="map-container">
-      <div id="map"></div>
+      <div id="map" role="application"></div>
     </section>
+
     <section>
       <div class="filter-options">
-        <h2>Filter Results</h2>
-        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
-          <option value="all">Neighborhoods</option>
-        </select>
-        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
-          <option value="all">Cuisines</option>
-        </select>
+        <div class="filter">
+            <label for="neighborhoods-select">
+                Select a neighborhood
+            </label>
+            <br>
+            <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+              <option value="all">All Neighborhoods</option>
+            </select>
+        </div>
+
+        <div class="filter">
+            <label for="cuisines-select">
+                Select cuisine type
+            </label>
+            <br>
+            <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+              <option value="all">All Cuisines</option>
+            </select>
+        </div>
       </div>
+
+      <h2 id="filter-header">FILTER RESULTS</h2>
+
       <ul id="restaurants-list"></ul>
     </section>
   </main>
