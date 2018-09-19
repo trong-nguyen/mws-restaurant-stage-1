@@ -52,8 +52,6 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('fetch', function(event) {
     var url = new URL(event.request.url);
-    self.arr = self.arr || [];
-    self.arr.push(event.request);
 
     if (url.pathname !== '/restaurant.html' &&
         (appCacheFiles.includes(url.pathname)
@@ -68,13 +66,14 @@ self.addEventListener('fetch', function(event) {
     else if (url.origin === location.origin) {
         event.respondWith(
             caches.open(dynamicCache).then(cache => {
-                return cache.match(url).then(response => {
-                    // In this implementation, clients effectively
-                    // lag behind in terms of when data get updated by 1 request.
-                    if (response) {
-                        fetchNew(event.request, cache);
-                        return response;
-                    }
+                return cache.match(url, {ignoreSearch: true})
+                    .then(response => {
+                        // In this implementation, clients effectively
+                        // lag behind in terms of when data get updated by 1 request.
+                        if (response) {
+                            fetchNew(event.request, cache);
+                            return response;
+                        }
 
                     return fetchNew(event.request, cache);
                 })
