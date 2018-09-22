@@ -14,6 +14,7 @@ var appCacheFiles = [
     '/js/dbhelper.js',
     '/css/styles.css',
     '/data/restaurants.json',
+    '/dist/idb.js',
     'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css',
     'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'
 ];
@@ -52,6 +53,7 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('fetch', function(event) {
     var url = new URL(event.request.url);
+    console.log(url);
 
     if (url.pathname !== '/restaurant.html' &&
         (appCacheFiles.includes(url.pathname)
@@ -63,7 +65,8 @@ self.addEventListener('fetch', function(event) {
     }
 
     // only cache the data from our site
-    else if (url.origin === location.origin) {
+    // else if (url.origin === location.origin) {
+    else if (url.hostname === location.hostname) {
         event.respondWith(
             caches.open(dynamicCache).then(cache => {
                 return cache.match(url, {ignoreSearch: true})

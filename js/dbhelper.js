@@ -1,6 +1,63 @@
 /**
  * Common database helper functions.
  */
+// import idb from 'idb';
+
+const RESTAURANT_DB = 'restaurant-db';
+
+let dbPromise = idb.open(RESTAURANT_DB, 4, db => {
+  db.createObjectStore('keyval');
+});
+
+// jake archibald implement
+const restaurantDb = {
+  get(key) {
+    return dbPromise.then(db => {
+      return db.transaction('keyval')
+        .objectStore('keyval').get(key);
+    });
+  },
+  set(key, val) {
+    return dbPromise.then(db => {
+      const tx = db.transaction('keyval', 'readwrite');
+      tx.objectStore('keyval').put(val, key);
+      return tx.complete;
+    });
+  },
+  delete(key) {
+    return dbPromise.then(db => {
+      const tx = db.transaction('keyval', 'readwrite');
+      tx.objectStore('keyval').delete(key);
+      return tx.complete;
+    });
+  },
+  clear() {
+    return dbPromise.then(db => {
+      const tx = db.transaction('keyval', 'readwrite');
+      tx.objectStore('keyval').clear();
+      return tx.complete;
+    });
+  },
+  keys() {
+    return dbPromise.then(db => {
+      const tx = db.transaction('keyval');
+      const keys = [];
+      const store = tx.objectStore('keyval');
+
+      // This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
+      // openKeyCursor isn't supported by Safari, so we fall back
+      (store.iterateKeyCursor || store.iterateCursor).call(store, cursor => {
+        if (!cursor) return;
+        keys.push(cursor.key);
+        cursor.continue();
+      });
+
+      return tx.complete.then(() => keys);
+    });
+  }
+};
+
+
 class DBHelper {
 
   /**
@@ -8,8 +65,15 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    // const port = 8000 // Change this to your server port
+    // return `http://localhost:${port}/data/restaurants.json`;
+
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/restaurants`;
+  }
+
+  static getRestaurantUrl(id) {
+    return `${DBHelper.DATABASE_URL}/${id}`;
   }
 
   /**
@@ -21,7 +85,8 @@ class DBHelper {
     xhr.onload = () => {
       if (xhr.status === 200) { // Got a success response from server!
         const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
+        const restaurants = json;
+        restaurantDb.set('restaurants', restaurants);
         callback(null, restaurants);
       } else { // Oops!. Got an error from server.
         const error = (`Request failed. Returned status of ${xhr.status}`);
@@ -35,19 +100,19 @@ class DBHelper {
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    // fetch all restaurants with proper error handling.
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', DBHelper.getRestaurantUrl(id));
+    xhr.onload = () => {
+      if (xhr.status === 200) { // Got a success response from server!
+        const restaurant = JSON.parse(xhr.responseText);
+        restaurantDb.set(id, restaurant);
+        callback(null, restaurant);
+      } else { // Oops!. Got an error from server.
+        const error = (`Request restaurant id ${id} failed. Returned status of ${xhr.status}`);
         callback(error, null);
-      } else {
-        const restaurant = restaurants.find(r => r.id == id);
-        if (restaurant) { // Got the restaurant
-          callback(null, restaurant);
-        } else { // Restaurant does not exist in the database
-          callback('Restaurant does not exist', null);
-        }
       }
-    });
+    };
+    xhr.send();
   }
 
   /**
@@ -150,14 +215,14 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    return (`/img/${restaurant.photograph}.jpg`);
   }
 
   /**
    * Map marker for a restaurant.
    */
    static mapMarkerForRestaurant(restaurant, map) {
-    // https://leafletjs.com/reference-1.3.0.html#marker  
+    // https://leafletjs.com/reference-1.3.0.html#marker
     const marker = new L.marker([restaurant.latlng.lat, restaurant.latlng.lng],
       {title: restaurant.name,
       alt: restaurant.name,
@@ -165,7 +230,7 @@ class DBHelper {
       })
       marker.addTo(newMap);
     return marker;
-  } 
+  }
   /* static mapMarkerForRestaurant(restaurant, map) {
     const marker = new google.maps.Marker({
       position: restaurant.latlng,
