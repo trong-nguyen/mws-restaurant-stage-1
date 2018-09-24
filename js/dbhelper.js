@@ -100,19 +100,34 @@ class DBHelper {
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.getRestaurantUrl(id));
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const restaurant = JSON.parse(xhr.responseText);
-        restaurantDb.set(id, restaurant);
-        callback(null, restaurant);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request restaurant id ${id} failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-      }
-    };
-    xhr.send();
+    restaurantDb.get(id)
+      .then(restaurantData => {
+        if (!restaurantData) {
+            console.log('data', restaurantData);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', DBHelper.getRestaurantUrl(id));
+            xhr.onload = () => {
+              if (xhr.status === 200) { // Got a success response from server!
+                const restaurantData = JSON.parse(xhr.responseText);
+                restaurantDb
+                  .set(id, restaurantData)
+                  .then(
+                    () => {
+                      callback(null, restaurantData);
+                    }
+                  );
+              } else { // Oops!. Got an error from server.
+                const error = (`Request restaurant id ${id} failed. Returned status of ${xhr.status}`);
+                callback(error, null);
+              }
+            };
+            xhr.send();
+
+        } else {
+          callback(null, restaurantData);
+        }
+      })
   }
 
   /**

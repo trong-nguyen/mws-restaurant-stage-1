@@ -53,14 +53,14 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('fetch', function(event) {
     var url = new URL(event.request.url);
-    console.log(url);
+    // console.log(url);
 
     if (url.pathname !== '/restaurant.html' &&
         (appCacheFiles.includes(url.pathname)
         // this one for leafletjs
         || appCacheFiles.includes(event.request.url))) {
 
-        console.log('serving skeleton files', event.request);
+        // console.log('serving skeleton files', event.request);
         event.respondWith(caches.match(url));
     }
 
