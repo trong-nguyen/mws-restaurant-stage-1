@@ -1,4 +1,4 @@
-var appCache = 'restaurant-app-v2';
+var appCache = 'restaurant-app-v1';
 var dynamicCache = 'restaurant-content';
 var allCaches = [
     appCache,
