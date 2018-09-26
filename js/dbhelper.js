@@ -23,37 +23,6 @@ const RestaurantDb = {
       tx.objectStore('keyval').put(val, key);
       return tx.complete;
     });
-  },
-  delete(key) {
-    return dbPromise.then(db => {
-      const tx = db.transaction('keyval', 'readwrite');
-      tx.objectStore('keyval').delete(key);
-      return tx.complete;
-    });
-  },
-  clear() {
-    return dbPromise.then(db => {
-      const tx = db.transaction('keyval', 'readwrite');
-      tx.objectStore('keyval').clear();
-      return tx.complete;
-    });
-  },
-  keys() {
-    return dbPromise.then(db => {
-      const tx = db.transaction('keyval');
-      const keys = [];
-      const store = tx.objectStore('keyval');
-
-      // This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
-      // openKeyCursor isn't supported by Safari, so we fall back
-      (store.iterateKeyCursor || store.iterateCursor).call(store, cursor => {
-        if (!cursor) return;
-        keys.push(cursor.key);
-        cursor.continue();
-      });
-
-      return tx.complete.then(() => keys);
-    });
   }
 };
 
@@ -109,21 +78,6 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    // let xhr = new XMLHttpRequest();
-    // xhr.open('GET', DBHelper.DATABASE_URL);
-    // xhr.onload = () => {
-    //   if (xhr.status === 200) { // Got a success response from server!
-    //     const json = JSON.parse(xhr.responseText);
-    //     const restaurants = json;
-    //     RestaurantDb.set('restaurants', restaurants);
-    //     callback(null, restaurants);
-    //   } else { // Oops!. Got an error from server.
-    //     const error = (`Request failed. Returned status of ${xhr.status}`);
-    //     callback(error, null);
-    //   }
-    // };
-    // xhr.send();
-
     return requestJson(DBHelper.DATABASE_URL);
   }
 

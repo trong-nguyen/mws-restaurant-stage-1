@@ -1,4 +1,4 @@
-var appCache = 'restaurant-app-v1';
+var appCache = 'restaurant-app-v2';
 var dynamicCache = 'restaurant-content';
 var allCaches = [
     appCache,
@@ -13,7 +13,7 @@ var appCacheFiles = [
     '/js/restaurant_info.js',
     '/js/dbhelper.js',
     '/css/styles.css',
-    '/data/restaurants.json',
+    // '/data/restaurants.json',
     '/dist/idb.js',
     'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css',
     'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'
@@ -30,10 +30,14 @@ self.addEventListener('install', event => {
 });
 
 function fetchNew(request, cache) {
-    return fetch(request).then(response => {
-        cache.put(request.url, response.clone());
-        return response;
-    });
+    return fetch(request)
+        .then(response => {
+            cache.put(request.url, response.clone());
+            return response;
+        })
+        .catch(error => {
+            console.error('Fetch failed');
+        });
 }
 
 self.addEventListener('activate', function(event) {
