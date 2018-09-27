@@ -1,5 +1,6 @@
-var appCache = 'restaurant-app-v2';
-var dynamicCache = 'restaurant-content';
+var appVersion = 'v2';
+var appCache = 'restaurant-app-' + appVersion;
+var dynamicCache = 'restaurant-content-' + appVersion;
 var allCaches = [
     appCache,
     dynamicCache
@@ -45,9 +46,10 @@ self.addEventListener('activate', function(event) {
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.filter(cacheName => {
-                    return cacheName.startsWith('restaurant-app')
+                    return cacheName.startsWith('restaurant-')
                     && !allCaches.includes(cacheName);
                 }).map(cacheName => {
+                    console.log('clearing', cacheName);
                     return caches.delete(cacheName);
                 })
             );

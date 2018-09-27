@@ -5,8 +5,10 @@
 
 const RESTAURANT_DB_NAME = 'restaurant-db';
 
-let dbPromise = idb.open(RESTAURANT_DB_NAME, 4, db => {
-  db.createObjectStore('keyval');
+let dbPromise = idb.open(RESTAURANT_DB_NAME, 1, db => {
+  if(!db.objectStoreNames.containes('keyval')) {
+    db.createObjectStore('keyval');
+  }
 });
 
 // jake archibald implement

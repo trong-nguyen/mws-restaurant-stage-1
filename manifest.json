@@ -1,0 +1,14 @@
+{
+  "name": "Restaurant Review",
+  "short_name": "RR",
+  "description": "View great restaurants in your neighborhood with reviews",
+  "start_url": "/",
+  "background_color": "#000000",
+  "theme_color": "#0f4a73",
+  "display": "minimal-ui",
+  "icons": [{
+    "src": "manifest-256.png",
+    "sizes": "256x256",
+    "type": "image/png"
+  }]
+}
