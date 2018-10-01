@@ -16,7 +16,9 @@
   <header>
     <!-- Beginning nav -->
     <nav>
-      <h1><a href="/">Restaurant Reviews</a></h1>
+        <span class="site-header">
+            <h1><a href="/">Restaurant Reviews</a></h1>
+        </span>
     </nav>
     <!-- Beginning breadcrumb -->
     <ul id="breadcrumb" role="navigation" aria-label="Breadcrumb">
@@ -32,6 +34,12 @@
     <!-- Beginning restaurant -->
     <section id="restaurant-container">
       <h2 id="restaurant-name" tabindex="0"></h2>
+      <div id="favorite-button-container">
+        <label class="switch">
+          <input type="checkbox" id="favorite-button" role="switch" aria-checked="">
+          <span class="slider"></span>
+        </label>
+      </div>
       <img id="restaurant-img">
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address" tabindex="0"></p>
@@ -47,6 +55,40 @@
     <section id="reviews-container" tabindex="0">
       <h2>Reviews</h2>
       <ul id="reviews-list"></ul>
+      <section id="review-form-container">
+        <form action="restaurant_submit" method="get" accept-charset="utf-8" id="review-form">
+            <h2>What's on your mind?</h2>
+            <section class="form-section">
+              Rating: <span class="starRating">
+                <input id="rating5" type="radio" name="rating" value="5">
+                <label for="rating5">5</label>
+                <input id="rating4" type="radio" name="rating" value="4">
+                <label for="rating4">4</label>
+                <input id="rating3" type="radio" name="rating" value="3">
+                <label for="rating3">3</label>
+                <input id="rating2" type="radio" name="rating" value="2">
+                <label for="rating2">2</label>
+                <input id="rating1" type="radio" name="rating" value="1">
+                <label for="rating1">1</label>
+              </span>
+            </section>
+            <section class="form-section">
+              <label>
+                  <input type="text" name="review-name" class="ui-input" value="" placeholder="Your name ...">
+              </label>
+            </section>
+            <section class="form-section">
+              <label>
+                  <textarea name="review-comments" class="ui-input" value="" rows="4" placeholder="Comments ..."></textarea>
+              </label>
+            </section>
+            <section class="form-section">
+              <label>
+                  <button type="submit" id="review-submit">Submit</button>
+              </label>
+            </section>
+        </form>
+      </section>
     </section>
     <!-- End reviews -->
   </main>

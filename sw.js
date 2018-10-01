@@ -67,11 +67,10 @@ self.addEventListener('fetch', function(event) {
         || appCacheFiles.includes(event.request.url))) {
 
         // console.log('serving skeleton files', event.request);
-        event.respondWith(caches.match(url));
+        event.respondWith(caches.match(event.request));
     }
 
     // only cache the data from our site
-    // else if (url.origin === location.origin) {
     else if (url.hostname === location.hostname) {
         event.respondWith(
             caches.open(dynamicCache).then(cache => {

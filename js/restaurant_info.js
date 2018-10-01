@@ -8,6 +8,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
   initMap();
 });
 
+// favorite button
+document
+  .getElementById('favorite-button')
+  .addEventListener('change', handleFavoriteChange, false);
+
+function handleFavoriteChange(event) {
+  var el = event.target;
+
+  console.log('favorite state changed to', el.checked);
+}
+
 /**
  * Initialize leaflet map
  */
@@ -34,22 +45,6 @@ initMap = () => {
     }
   });
 }
-
-/* window.initMap = () => {
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
-      self.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false
-      });
-      fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-    }
-  });
-} */
 
 /**
  * Get current restaurant from page URL.
@@ -93,7 +88,7 @@ fillRestaurantHTML = (restaurant) => {
 
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img';
-  console.log(restaurant);
+
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
   image.alt = 'A picture respresents ' + restaurant.name + ' restaurant';
 
@@ -133,18 +128,18 @@ fillRestaurantHoursHTML = (operatingHours) => {
  */
 fillReviewsHTML = (reviews) => {
   const container = document.getElementById('reviews-container');
-  if (!reviews) {
-    const noReviews = document.createElement('p');
-    noReviews.innerHTML = 'No reviews yet!';
-    container.appendChild(noReviews);
-    return;
-  }
   const ul = document.getElementById('reviews-list');
+
   ul.innerHTML = ""; // to avoid duplicated if already created
-  reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review));
-  });
-  container.appendChild(ul);
+  if (reviews) {
+    reviews.forEach(review => {
+      ul.appendChild(createReviewHTML(review));
+    });
+  }
+
+  if (!ul.hasChildNodes()) {
+    ul.append(createReviewHTML({comments:'No reviews yet!'}))
+  }
 }
 
 /**
@@ -154,15 +149,15 @@ createReviewHTML = (review) => {
   const li = document.createElement('li');
   li.setAttribute('tabindex', '0'); // add this review to the navigationable tabs
   const name = document.createElement('p');
-  name.innerHTML = review.name;
+  name.innerHTML = review.name || '';
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = review.date || '';
   li.appendChild(date);
 
   const rating = document.createElement('p');
-  rating.innerHTML = `Rating: ${review.rating}`;
+  rating.innerHTML = review.rating ? `Rating: ${review.rating}` : '';
   li.appendChild(rating);
 
   const comments = document.createElement('p');

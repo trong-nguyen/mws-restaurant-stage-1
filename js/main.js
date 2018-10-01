@@ -191,9 +191,9 @@ navigator.serviceWorker.register('/sw.js', {
         scope: '/'
     }).then(
         reg => {
-            console.log('hi', reg);
+            // console.log('hi', reg);
         },
         err => {
-            console.log('e', err);
+            // console.log('e', err);
         }
     );
