@@ -1,4 +1,6 @@
-var appVersion = 'v2';
+importScripts('js/sw/deferred_requests.js');
+
+var appVersion = 'v1';
 var appCache = 'restaurant-app-' + appVersion;
 var dynamicCache = 'restaurant-content-' + appVersion;
 var allCaches = [
@@ -96,4 +98,39 @@ self.addEventListener('message', event => {
     if (event.data.action == 'skipWaiting') {
         self.skipWaiting();
     }
-})
+});
+
+
+
+// /* eslint-env es6 */
+// /* eslint no-unused-vars: 0 */
+// /* global importScripts, ServiceWorkerWare, localforage */
+// importScripts('./lib/ServiceWorkerWare.js');
+// importScripts('./lib/localforage.js');
+
+// // Determine the root for the routes. I.e, if the Service Worker URL is
+// // `http://example.com/path/to/sw.js`, then the root is
+// // `http://example.com/path/to/`
+// var root = (function() {
+//   var tokens = (self.location + '').split('/');
+//   tokens[tokens.length - 1] = '';
+//   return tokens.join('/');
+// })();
+
+// // By using Mozilla's ServiceWorkerWare we can quickly setup some routes
+// // for a _virtual server_. **It is convenient you review the
+// // [virtual server recipe](/virtual-server.html) before seeing this**.
+// var worker = new ServiceWorkerWare();
+
+// // A fake response with a joke for when there is no connection. A real
+// // implementation could have cached the last collection of quotations
+// // and keep a local model. For simplicity, not implemented here.
+// worker.get(root + 'api/quotations?*', tryOrFallback(new Response(
+//   JSON.stringify([{
+//     text: 'You are offline and I know it well.',
+//     author: 'The Service Worker Cookbook',
+//     id: 1,
+//     isSticky: true
+//   }]),
+//   { headers: { 'Content-Type': 'application/json' } }
+// )));
