@@ -1,5 +1,27 @@
 importScripts('js/sw/deferred_requests.js');
 
+// tryOrFallback(new Response(
+//   JSON.stringify([{
+//     text: 'You are offline and I know it well.',
+//     author: 'The Service Worker Cookbook',
+//     id: 1,
+//     isSticky: true
+//   }]),
+//   { headers: { 'Content-Type': 'application/json' } }
+// ));
+
+testResponse = new Response(
+  JSON.stringify([{
+    text: 'You are offline and I know it well.',
+    author: 'The Service Worker Cookbook',
+    id: 1,
+    isSticky: true
+  }]),
+  { headers: { 'Content-Type': 'application/json' } }
+);
+
+// tryOrFallback(testResponse);
+
 var appVersion = 'v1';
 var appCache = 'restaurant-app-' + appVersion;
 var dynamicCache = 'restaurant-content-' + appVersion;

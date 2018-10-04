@@ -7,7 +7,7 @@ importScripts('dist/idb.js');
 
 class DeferredQueue {
   constructor(mainDb) {
-    const cachePromise = idb.open('restaurant-db', 1, db => {
+    const cachePromise = idb.open(mainDb, 1, db => {
       if(!db.objectStoreNames.contains('deferred-queue')) {
         db.createObjectStore('deferred-queue');
       }
@@ -45,12 +45,13 @@ class DeferredQueue {
   // be saved so we need an alternative representations. This is
   // why we call to `serialize()`.`
   enqueue(request) {
+    const queueDb = this.queueDb;
     return DeferredQueue.serialize(request).then(function(serialized) {
-      this.queueDb.get().then(function(queue) {
+      queueDb.get().then(function(queue) {
         /* eslint no-param-reassign: 0 */
         queue = queue || [];
         queue.push(serialized);
-        return this.queueDb.set(queue).then(function() {
+        return queueDb.set(queue).then(function() {
           console.log(serialized.method, serialized.url, 'enqueued!');
         });
       });
@@ -63,8 +64,9 @@ class DeferredQueue {
   // we need to recreate it from the alternative representation
   // stored in IndexedDB.
   flushQueue() {
+    const queueDb = this.queueDb;
     // Get the queue
-    return this.queueDb.get().then(function(queue) {
+    return queueDb.get().then(function(queue) {
       /* eslint no-param-reassign: 0 */
       queue = queue || [];
 
@@ -80,7 +82,7 @@ class DeferredQueue {
         // in queue are a success when reaching the Network. So it should empty the
         // queue step by step, only popping from the queue if the request completes
         // with success.
-        return this.queueDb.set([]);
+        return queueDb.set([]);
       });
     });
   }
@@ -120,7 +122,7 @@ class DeferredQueue {
   }
 }
 
-const deferredQueue = new DeferredQueue();
+const deferredQueue = new DeferredQueue('queueDb');
 
 
 // Send the requests inside the queue in order. Waiting for the current before
