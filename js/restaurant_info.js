@@ -19,6 +19,24 @@ function handleFavoriteChange(event) {
   console.log('favorite state changed to', el.checked);
 }
 
+function submitReview {
+  let data = {};
+
+  let rating = collectRating();
+  let name = collectReviewerName();
+  let comments = collectComments();
+
+  if (!(rating && name && comments)) {
+    rejectSubmission();
+  }
+
+  data = {
+    rating: rating,
+    name: name,
+    comments: comments
+  }
+}
+
 /**
  * Initialize leaflet map
  */
