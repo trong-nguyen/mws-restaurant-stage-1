@@ -81,11 +81,30 @@ self.addEventListener('activate', function(event) {
     )
 });
 
+function makeJsonResponse(jsonData) {
+    return new Response(JSON.stringify(jsonData), {
+        status: 200,
+        statusText: 'OK',
+        headers: {'Content-Type': 'application/json'}
+    })
+}
+
 self.addEventListener('fetch', function(event) {
     var url = new URL(event.request.url);
     // console.log(url);
 
-    if (url.pathname !== '/restaurant.html' &&
+    var req = event.request.clone();
+
+    // add review endpoint
+    if (req.method === 'POST' && url.pathname === '/reviews') {
+        req.json().then(submitedData => {
+            tryOrFallback(null)(event.request.clone());
+            // return the review regardless of results
+            event.respondWith(makeJsonResponse(submitedData));
+        });
+    }
+
+    else if (url.pathname !== '/restaurant.html' &&
         (appCacheFiles.includes(url.pathname)
         // this one for leafletjs
         || appCacheFiles.includes(event.request.url))) {

@@ -74,11 +74,11 @@ class DBHelper {
     return `http://localhost:${port}`;
   }
 
-  static get POST_REVIEW_ENDPOINT {
+  static get POST_REVIEW_ENDPOINT() {
     return `${DBHelper.SERVER_URL}/reviews`;
   }
 
-  http://localhost:1337/restaurants/<restaurant_id>/?is_favorite=true
+  // http://localhost:1337/restaurants/<restaurant_id>/?is_favorite=true
 
   static getRestaurantEndpoint(id) {
     return `${DBHelper.SERVER_URL}/restaurants/${id}`;
@@ -222,7 +222,7 @@ class DBHelper {
         }
       };
       xhr.send(JSON.stringify(data));
-    };
+    });
   }
 
   static toggleFavorite(restaurantId, isFavorite) {
@@ -238,7 +238,7 @@ class DBHelper {
         }
       };
       xhr.send('/?is_favorite=' + isFavorite ? 'true' : 'false');
-    };
+    });
   }
 }
 

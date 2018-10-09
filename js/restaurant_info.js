@@ -19,7 +19,7 @@ function handleFavoriteChange(event) {
   console.log('favorite state changed to', el.checked);
 }
 
-function submitReview {
+function submitReview() {
   let data = {};
 
   let rating = collectRating();
@@ -33,8 +33,34 @@ function submitReview {
   data = {
     rating: rating,
     name: name,
-    comments: comments
+    comments: comments,
+    restaurant_id: getParameterByName('id')
   }
+
+  DBHelper.addReview(data)
+    .then(response => {
+      clearReviewForm();
+      appendOneReviewHTML(response);
+    });
+}
+
+function collectRating() {
+  let inputs = document.getElementsByClassName('starRating')[0]
+    .getElementsByTagName('input');
+
+  let rating = 0;
+  while (inputs[rating].checked) {
+    rating += 1;
+  }
+  return rating;
+}
+
+function collectReviewerName() {
+  return document.getElementById('review-name').value;
+}
+
+function collectComments() {
+  return document.getElementById('review-comments').value;
 }
 
 /**
@@ -157,6 +183,13 @@ fillReviewsHTML = (reviews) => {
 
   if (!ul.hasChildNodes()) {
     ul.append(createReviewHTML({comments:'No reviews yet!'}))
+  }
+}
+
+appendOneReviewHTML = (review) => {
+  const ul = document.getElementById('reviews-list');
+  if (review) {
+    ul.appendChild(createReviewHTML(review));
   }
 }
 
