@@ -39,20 +39,30 @@ function submitReview() {
 
   DBHelper.addReview(data)
     .then(response => {
-      clearReviewForm();
+      clearReviewForms();
       appendOneReviewHTML(response);
     });
 }
 
-function collectRating() {
-  let inputs = document.getElementsByClassName('starRating')[0]
-    .getElementsByTagName('input');
-
-  let rating = 0;
-  while (inputs[rating].checked) {
-    rating += 1;
+function getRatingElement(i) {
+  let elm = document.getElementById('rating' + String(i));
+  if (!elm) {
+    throw 'Getting invalid element' + String(i);
   }
-  return rating;
+
+  return elm;
+}
+
+function collectRating() {
+  let ratings = [1, 2, 3, 4, 5]
+    .map(i => [i, getRatingElement(i)])
+    .filter(elm => elm[1].checked);
+
+  if (ratings.length) {
+    return ratings[0][0];
+  }
+
+  return 0;
 }
 
 function collectReviewerName() {
@@ -61,6 +71,11 @@ function collectReviewerName() {
 
 function collectComments() {
   return document.getElementById('review-comments').value;
+}
+
+function clearReviewForms() {
+  document.getElementById('review-name').value = "";
+  document.getElementById('review-comments').value = "";
 }
 
 /**
@@ -243,3 +258,9 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+
+document.getElementById('review-form').addEventListener('submit', event => {
+  event.preventDefault();
+  submitReview();
+})
