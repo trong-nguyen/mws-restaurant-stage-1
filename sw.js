@@ -86,7 +86,7 @@ function makeJsonResponse(jsonData) {
         status: 200,
         statusText: 'OK',
         headers: {'Content-Type': 'application/json'}
-    })
+    });
 }
 
 self.addEventListener('fetch', function(event) {

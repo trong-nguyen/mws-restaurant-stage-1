@@ -41,7 +41,15 @@ function submitReview() {
     .then(response => {
       clearReviewForms();
       appendOneReviewHTML(response);
+      popSuccessNotification('Review submitted');
+    })
+    .catch(error => {
+      popAlertNotification('Failed to submit review');
     });
+}
+
+function rejectSubmission() {
+  popAlertNotification('Failed to submit: form incomplete');
 }
 
 function getRatingElement(i) {
@@ -263,4 +271,24 @@ getParameterByName = (name, url) => {
 document.getElementById('review-form').addEventListener('submit', event => {
   event.preventDefault();
   submitReview();
-})
+});
+
+
+function popNotification(text, style) {
+  let e = document.getElementById('notification-box');
+  e.className = style;
+  e.innerText = text;
+  e.removeAttribute('aria-hidden');
+  setTimeout(() => {
+    e.removeAttribute('class');
+    e.setAttribute('aria-hidden', '');
+  }, 3000);
+}
+
+function popAlertNotification(text) {
+  popNotification(text, 'show alert');
+}
+
+function popSuccessNotification(text) {
+  popNotification(text, 'show success');
+}
