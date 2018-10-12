@@ -97,11 +97,13 @@ self.addEventListener('fetch', function(event) {
 
     // add review endpoint
     if (req.method === 'POST' && url.pathname === '/reviews') {
-        req.json().then(submitedData => {
-            tryOrFallback(null)(event.request.clone());
-            // return the review regardless of results
-            event.respondWith(makeJsonResponse(submitedData));
-        });
+        event.respondWith(
+            req.json().then(submittedData => {
+                let tempResponse = makeJsonResponse(submittedData);
+                tryOrFallback(tempResponse.clone())(event.request.clone());
+                return tempResponse;
+            })
+        );
     }
 
     else if (url.pathname !== '/restaurant.html' &&

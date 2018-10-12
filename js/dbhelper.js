@@ -213,6 +213,7 @@ class DBHelper {
     let xhr = new XMLHttpRequest();
     xhr.open('POST', DBHelper.POST_REVIEW_ENDPOINT);
     xhr.setRequestHeader('Content-type', 'application/json');
+    // console.log(data);
     return new Promise((resolve, reject) => {
       xhr.onload = () => {
         if (xhr.status === 200) {

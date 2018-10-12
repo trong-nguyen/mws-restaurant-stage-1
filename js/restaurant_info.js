@@ -28,6 +28,7 @@ function submitReview() {
 
   if (!(rating && name && comments)) {
     rejectSubmission();
+    return;
   }
 
   data = {
@@ -40,7 +41,7 @@ function submitReview() {
   DBHelper.addReview(data)
     .then(response => {
       clearReviewForms();
-      appendOneReviewHTML(response);
+      appendOneReviewHTML(data);
       popSuccessNotification('Review submitted');
     })
     .catch(error => {
