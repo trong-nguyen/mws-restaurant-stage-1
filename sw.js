@@ -1,27 +1,5 @@
 importScripts('js/sw/deferred_requests.js');
 
-// tryOrFallback(new Response(
-//   JSON.stringify([{
-//     text: 'You are offline and I know it well.',
-//     author: 'The Service Worker Cookbook',
-//     id: 1,
-//     isSticky: true
-//   }]),
-//   { headers: { 'Content-Type': 'application/json' } }
-// ));
-
-testResponse = new Response(
-  JSON.stringify([{
-    text: 'You are offline and I know it well.',
-    author: 'The Service Worker Cookbook',
-    id: 1,
-    isSticky: true
-  }]),
-  { headers: { 'Content-Type': 'application/json' } }
-);
-
-// tryOrFallback(testResponse);
-
 var appVersion = 'v1';
 var appCache = 'restaurant-app-' + appVersion;
 var dynamicCache = 'restaurant-content-' + appVersion;
@@ -91,19 +69,44 @@ function makeJsonResponse(jsonData) {
 
 self.addEventListener('fetch', function(event) {
     var url = new URL(event.request.url);
-    // console.log(url);
 
     var req = event.request.clone();
 
     // add review endpoint
-    if (req.method === 'POST' && url.pathname === '/reviews') {
-        event.respondWith(
-            req.json().then(submittedData => {
-                let tempResponse = makeJsonResponse(submittedData);
-                tryOrFallback(tempResponse.clone())(event.request.clone());
-                return tempResponse;
-            })
-        );
+    if (url.hostname === location.hostname && url.pathname === '/reviews/') {
+        if (req.method === 'POST') {
+            event.respondWith(
+                fetchOrQueue(event.request.clone(),
+                    makeJsonResponse({queued: true}))
+            );
+        }
+
+        else if (req.method === 'GET') {
+            event.respondWith(
+                fetch(event.request)
+                    .then(response => {
+                        // online first
+                        if (response) {
+                            // cache it
+                            clonedResponse = response.clone();
+                            caches.open(dynamicCache).then(cache => {
+                                cache.put(req.clone(), clonedResponse);
+                            })
+                            return response;
+                        }
+
+                        // then cache
+                        return caches.open(dynamicCache).then(cache => {
+                            return cache.match(request).then(cachedResponse => {
+                                if (cachedResponse) {
+                                    return cachedResponse;
+                                }
+                            })
+                        })
+                    })
+                    .catch(console.error)
+            );
+        }
     }
 
     else if (url.pathname !== '/restaurant.html' &&
@@ -143,37 +146,13 @@ self.addEventListener('message', event => {
     }
 });
 
-
-
-// /* eslint-env es6 */
-// /* eslint no-unused-vars: 0 */
-// /* global importScripts, ServiceWorkerWare, localforage */
-// importScripts('./lib/ServiceWorkerWare.js');
-// importScripts('./lib/localforage.js');
-
-// // Determine the root for the routes. I.e, if the Service Worker URL is
-// // `http://example.com/path/to/sw.js`, then the root is
-// // `http://example.com/path/to/`
-// var root = (function() {
-//   var tokens = (self.location + '').split('/');
-//   tokens[tokens.length - 1] = '';
-//   return tokens.join('/');
-// })();
-
-// // By using Mozilla's ServiceWorkerWare we can quickly setup some routes
-// // for a _virtual server_. **It is convenient you review the
-// // [virtual server recipe](/virtual-server.html) before seeing this**.
-// var worker = new ServiceWorkerWare();
-
-// // A fake response with a joke for when there is no connection. A real
-// // implementation could have cached the last collection of quotations
-// // and keep a local model. For simplicity, not implemented here.
-// worker.get(root + 'api/quotations?*', tryOrFallback(new Response(
-//   JSON.stringify([{
-//     text: 'You are offline and I know it well.',
-//     author: 'The Service Worker Cookbook',
-//     id: 1,
-//     isSticky: true
-//   }]),
-//   { headers: { 'Content-Type': 'application/json' } }
-// )));
+self.addEventListener('sync', event => {
+    console.log(event);
+    if (event.tag === 'sendQueuedReviews') {
+        event.waitUntil(
+            deferredQueue.flushQueue().then(() => {
+                console.log('Queued messages have been sent');
+            })
+        );
+    }
+});

@@ -141,29 +141,16 @@ function sendInOrder(requests) {
   return sending;
 }
 
-
-// So here is the idea. We will check if we are online or not. In case
-// we are not online, enqueue the request and provide a fake response.
-// Else, flush the queue and let the new request to reach the network.
-
 // This function factory does exactly that.
-function tryOrFallback(fakeResponse) {
+function fetchOrQueue(request, responseIfQueued) {
   // Return a handler that...
-  return function(req, res) {
-    // If offline, enqueue and answer with the fake response.
-    if (!navigator.onLine) {
-      console.log('No network availability, enqueuing');
-      return deferredQueue.enqueue(req).then(function() {
-        // As the fake response will be reused but Response objects
-        // are one use only, we need to clone it each time we use it.
-        return fakeResponse.clone();
-      });
-    }
-
-    // If online, flush the queue and answer from network.
-    // console.log('Network available! Flushing queue.');
-    return deferredQueue.flushQueue().then(function() {
-      return fetch(req);
+  if (!navigator.onLine) {
+    console.log('No network availability, enqueuing');
+    return deferredQueue.enqueue(request).then(() => {
+      // return a response with a queued property
+      return responseIfQueued;
     });
-  };
+  }
+
+  return fetch(request);
 }

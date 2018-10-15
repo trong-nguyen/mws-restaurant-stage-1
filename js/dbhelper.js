@@ -75,13 +75,17 @@ class DBHelper {
   }
 
   static get POST_REVIEW_ENDPOINT() {
-    return `${DBHelper.SERVER_URL}/reviews`;
+    return `${DBHelper.SERVER_URL}/reviews/`;
   }
 
   // http://localhost:1337/restaurants/<restaurant_id>/?is_favorite=true
 
   static getRestaurantEndpoint(id) {
     return `${DBHelper.SERVER_URL}/restaurants/${id}`;
+  }
+
+  static getRestaurantReviewsEndpoint(id) {
+    return `${DBHelper.SERVER_URL}/reviews/?restaurant_id=${id}`;
   }
 
   /**
@@ -168,7 +172,10 @@ class DBHelper {
       },
       callback
     );
+  }
 
+  static fetchReviewsForRestaurant(restaurantId) {
+    return requestJson(DBHelper.getRestaurantReviewsEndpoint(restaurantId));
   }
 
   /**
@@ -216,8 +223,9 @@ class DBHelper {
     // console.log(data);
     return new Promise((resolve, reject) => {
       xhr.onload = () => {
-        if (xhr.status === 200) {
-          resolve(xhr.responseText);
+        let status = xhr.status;
+        if (status === 200 /* queued */ || status === 201 /* created */) {
+          resolve(JSON.parse(xhr.responseText));
         } else {
           reject(`XHR request failed with error ${xhr.status}`);
         }
@@ -229,7 +237,7 @@ class DBHelper {
   static toggleFavorite(restaurantId, isFavorite) {
     let xhr = new XMLHttpRequest();
     xhr.open('PUT', DBHelper.getRestaurantEndpoint(restaurantId));
-    xhr.setRequestHeader('Content-type', "application/x-www-form-urlencoded");
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     return new Promise((resolve, reject) => {
       xhr.onload = () => {
         if (xhr.status === 200) {

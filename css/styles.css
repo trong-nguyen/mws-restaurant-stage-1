@@ -545,6 +545,11 @@ input:checked + .slider:before {
     background-color: #D4EDDA;
 }
 
+#notification-box.info {
+    color: #32708F;
+    background-color: #D9EDF7;
+}
+
 /* Animations to fade the notification-box in and out */
 @-webkit-keyframes fadein {
     from {bottom: 0; opacity: 0;}

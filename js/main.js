@@ -191,7 +191,8 @@ navigator.serviceWorker.register('/sw.js', {
         scope: '/'
     }).then(
         reg => {
-            // console.log('hi', reg);
+            // add sync event
+            reg.sync.register('sendQueuedReviews');
         },
         err => {
             // console.log('e', err);

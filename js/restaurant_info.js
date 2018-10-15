@@ -1,4 +1,3 @@
-let restaurant;
 var newMap;
 
 /**
@@ -6,17 +5,25 @@ var newMap;
  */
 document.addEventListener('DOMContentLoaded', (event) => {
   initMap();
+
+  // favorite button
+  let favoriteButton = document.getElementById('favorite-button');
+
+  favoriteButton.addEventListener('change', handleFavoriteChange);
+
+  document
+    .getElementById('review-form')
+    .addEventListener('submit', event => {
+      event.preventDefault();
+      submitReview();
+    });
 });
 
-// favorite button
-document
-  .getElementById('favorite-button')
-  .addEventListener('change', handleFavoriteChange, false);
 
 function handleFavoriteChange(event) {
   var el = event.target;
 
-  console.log('favorite state changed to', el.checked);
+  DBHelper.toggleFavorite(getParameterByName('id'), el.checked);
 }
 
 function submitReview() {
@@ -41,8 +48,13 @@ function submitReview() {
   DBHelper.addReview(data)
     .then(response => {
       clearReviewForms();
-      appendOneReviewHTML(data);
-      popSuccessNotification('Review submitted');
+
+      if (response.queued) {
+        popInfoNotification('Offline mode: review pending submission, refresh the page when online to view submitted data');
+      } else {
+        appendOneReviewHTML(data);
+        popSuccessNotification('Review submitted');
+      }
     })
     .catch(error => {
       popAlertNotification('Failed to submit review');
@@ -140,6 +152,10 @@ fetchRestaurantFromURL = (callback) => {
             callback(null, data);
           })
           .catch(console.error);
+
+        DBHelper.fetchReviewsForRestaurant(id)
+          .then(fillReviewsHTML)
+          .catch(console.error);
       });
   }
 }
@@ -167,8 +183,6 @@ fillRestaurantHTML = (restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML(restaurant.operating_hours);
   }
-  // fill reviews
-  fillReviewsHTML(restaurant.reviews);
 }
 
 /**
@@ -268,13 +282,6 @@ getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-
-document.getElementById('review-form').addEventListener('submit', event => {
-  event.preventDefault();
-  submitReview();
-});
-
-
 function popNotification(text, style) {
   let e = document.getElementById('notification-box');
   e.className = style;
@@ -292,4 +299,8 @@ function popAlertNotification(text) {
 
 function popSuccessNotification(text) {
   popNotification(text, 'show success');
+}
+
+function popInfoNotification(text) {
+  popNotification(text, 'show info');
 }
