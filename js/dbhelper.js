@@ -236,7 +236,7 @@ class DBHelper {
 
   static toggleFavorite(restaurantId, isFavorite) {
     let xhr = new XMLHttpRequest();
-    xhr.open('PUT', DBHelper.getRestaurantEndpoint(restaurantId));
+    xhr.open('PUT', DBHelper.getRestaurantEndpoint(restaurantId) + '/?is_favorite=' + (isFavorite ? 'true' : 'false'), true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     return new Promise((resolve, reject) => {
       xhr.onload = () => {
@@ -246,8 +246,19 @@ class DBHelper {
           reject(`XHR request failed with error ${xhr.status}`);
         }
       };
-      xhr.send('/?is_favorite=' + isFavorite ? 'true' : 'false');
+      xhr.send();
     });
+  }
+
+  // this is surely not efficient largely due to the lack of an id-only favorite list
+  static isRestaurantFavorite(restaurantId) {
+    return requestJson(`${DBHelper.SERVER_URL}/restaurants/?is_favorite=true`)
+      .then(restaurants => {
+        let ids = restaurants.map(rest => {
+          return rest.id;
+        });
+        return Boolean(ids.find(id => String(id) === String(restaurantId)));
+      });
   }
 }
 

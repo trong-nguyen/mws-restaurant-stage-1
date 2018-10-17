@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
   // favorite button
   let favoriteButton = document.getElementById('favorite-button');
 
+  // set the button according to current status
+  setFavoriteStatus(favoriteButton);
+
   favoriteButton.addEventListener('change', handleFavoriteChange);
 
   document
@@ -24,6 +27,13 @@ function handleFavoriteChange(event) {
   var el = event.target;
 
   DBHelper.toggleFavorite(getParameterByName('id'), el.checked);
+}
+
+function setFavoriteStatus(el) {
+  DBHelper.isRestaurantFavorite(getParameterByName('id'))
+    .then(isFavorite => {
+      el.checked = isFavorite;
+    });
 }
 
 function submitReview() {

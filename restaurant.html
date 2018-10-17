@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f4a73">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Normalize.css for better cross-browser consistency -->
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
@@ -76,13 +78,13 @@
               </span>
             </section>
             <section class="form-section">
-              <label>
-                  <input type="text" name="review-name" id="review-name" class="ui-input" value="" placeholder="Your name ...">
+              <label aria-label="review-name">
+                <input type="text" name="review-name" id="review-name" class="ui-input" value="" placeholder="Your name ...">
               </label>
             </section>
             <section class="form-section">
-              <label>
-                  <textarea name="review-comments" id="review-comments" class="ui-input" value="" rows="4" placeholder="Comments ..."></textarea>
+              <label aria-label="review-comments">
+                <textarea name="review-comments" id="review-comments" class="ui-input" value="" rows="4" placeholder="Comments ..."></textarea>
               </label>
             </section>
             <section class="form-section">
