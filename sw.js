@@ -1,14 +1,14 @@
 importScripts('js/sw/deferred_requests.js');
 
-var appVersion = 'v1';
-var appCache = 'restaurant-app-' + appVersion;
-var dynamicCache = 'restaurant-content-' + appVersion;
-var allCaches = [
+const appVersion   = 'v2';
+const appCache     = 'restaurant-app-' + appVersion;
+const dynamicCache = 'restaurant-content-' + appVersion;
+const allCaches    = [
     appCache,
     dynamicCache
 ];
 
-var appCacheFiles = [
+const appCacheFiles = [
     '/',
     '/index.html',
     '/restaurant.html',

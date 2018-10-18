@@ -65,15 +65,15 @@
             <h2>What's on your mind?</h2>
             <section class="form-section">
               Rating: <span class="starRating">
-                <input id="rating5" type="radio" name="rating" value="5">
+                <input id="rating5" type="radio" name="rating" value="5" role="button" aria-label="rating-button-5">
                 <label for="rating5">5</label>
-                <input id="rating4" type="radio" name="rating" value="4">
+                <input id="rating4" type="radio" name="rating" value="4" role="button" aria-label="rating-button-4">
                 <label for="rating4">4</label>
-                <input id="rating3" type="radio" name="rating" value="3">
+                <input id="rating3" type="radio" name="rating" value="3" role="button" aria-label="rating-button-3">
                 <label for="rating3">3</label>
-                <input id="rating2" type="radio" name="rating" value="2">
+                <input id="rating2" type="radio" name="rating" value="2" role="button" aria-label="rating-button-2">
                 <label for="rating2">2</label>
-                <input id="rating1" type="radio" name="rating" value="1">
+                <input id="rating1" type="radio" name="rating" value="1" role="button" aria-label="rating-button-1">
                 <label for="rating1">1</label>
               </span>
             </section>
@@ -111,6 +111,8 @@
   <script type="text/javascript" src="js/dbhelper.js"></script>
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.js"></script>
+  <!-- ServiceWorker -->
+  <script type="application/javascript" charset="utf-8" src="js/register_sw.js"></script>
 
   <!-- Google Maps -->
  <!--  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_tKbW6A5pQ-eupxI56myUnHLqYCzOjKo&libraries=places&callback=initMap"></script> -->

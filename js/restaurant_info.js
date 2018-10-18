@@ -37,8 +37,6 @@ function setFavoriteStatus(el) {
 }
 
 function submitReview() {
-  let data = {};
-
   let rating = collectRating();
   let name = collectReviewerName();
   let comments = collectComments();
@@ -48,19 +46,20 @@ function submitReview() {
     return;
   }
 
-  data = {
+  let data = {
     rating: rating,
     name: name,
     comments: comments,
     restaurant_id: getParameterByName('id')
-  }
+  };
 
   DBHelper.addReview(data)
     .then(response => {
       clearReviewForms();
 
       if (response.queued) {
-        popInfoNotification('Offline mode: review pending submission, refresh the page when online to view submitted data');
+        popInfoNotification('Offline mode: review pending submission, \
+          refresh the page when online to view submitted data');
       } else {
         appendOneReviewHTML(data);
         popSuccessNotification('Review submitted');
