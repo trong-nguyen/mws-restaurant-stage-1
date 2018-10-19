@@ -28,28 +28,11 @@ const RestaurantDb = {
   }
 };
 
-// a wrapper around XMLHttpRequest that returns a promise
 function requestJson(url) {
-  let xhr = new XMLHttpRequest();
-  xhr.open('GET', url);
-  return new Promise((resolve, reject) => {
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        const json = JSON.parse(xhr.responseText);
-        resolve(json);
-      } else {
-        reject(`XHR request failed with error ${xhr.status}`);
-      }
-    };
-    xhr.send();
+  return fetch(url).then(response => {
+    return response.json();
   });
 }
-
-
-
-
-
-
 
 function fetchRestaurantsWithAction(action, callback) {
   DBHelper.fetchRestaurants()
@@ -217,36 +200,50 @@ class DBHelper {
   } */
 
   static addReview(data) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', DBHelper.POST_REVIEW_ENDPOINT);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    // console.log(data);
-    return new Promise((resolve, reject) => {
-      xhr.onload = () => {
-        let status = xhr.status;
-        if (status === 200 /* queued */ || status === 201 /* created */) {
-          resolve(JSON.parse(xhr.responseText));
-        } else {
-          reject(`XHR request failed with error ${xhr.status}`);
-        }
-      };
-      xhr.send(JSON.stringify(data));
+    // let xhr = new XMLHttpRequest();
+    // xhr.open('POST', DBHelper.POST_REVIEW_ENDPOINT);
+    // xhr.setRequestHeader('Content-type', 'application/json');
+    // // console.log(data);
+    // return new Promise((resolve, reject) => {
+    //   xhr.onload = () => {
+    //     let status = xhr.status;
+    //     if (status === 200 /* queued */ || status === 201 /* created */) {
+    //       resolve(JSON.parse(xhr.responseText));
+    //     } else {
+    //       reject(`XHR request failed with error ${xhr.status}`);
+    //     }
+    //   };
+    //   xhr.send(JSON.stringify(data));
+    // });
+
+    const url = DBHelper.POST_REVIEW_ENDPOINT;
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
     });
   }
 
   static toggleFavorite(restaurantId, isFavorite) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('PUT', DBHelper.getRestaurantEndpoint(restaurantId) + '/?is_favorite=' + (isFavorite ? 'true' : 'false'), true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    return new Promise((resolve, reject) => {
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          resolve(xhr.responseText);
-        } else {
-          reject(`XHR request failed with error ${xhr.status}`);
-        }
-      };
-      xhr.send();
+    // let xhr = new XMLHttpRequest();
+    // xhr.open('PUT', DBHelper.getRestaurantEndpoint(restaurantId) + '/?is_favorite=' + (isFavorite ? 'true' : 'false'), true);
+    // xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    // return new Promise((resolve, reject) => {
+    //   xhr.onload = () => {
+    //     if (xhr.status === 200) {
+    //       resolve(xhr.responseText);
+    //     } else {
+    //       reject(`XHR request failed with error ${xhr.status}`);
+    //     }
+    //   };
+    //   xhr.send();
+    // });
+
+    const url = DBHelper.getRestaurantEndpoint(restaurantId) + '/?is_favorite=' + (isFavorite ? 'true' : 'false');
+    return fetch(url, {
+      method: 'PUT'
     });
   }
 

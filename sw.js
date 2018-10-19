@@ -1,6 +1,6 @@
 importScripts('js/sw/deferred_requests.js');
 
-const appVersion   = 'v2';
+const appVersion   = 'v3';
 const appCache     = 'restaurant-app-' + appVersion;
 const dynamicCache = 'restaurant-content-' + appVersion;
 const allCaches    = [
@@ -82,6 +82,18 @@ self.addEventListener('fetch', function(event) {
         }
 
         else if (req.method === 'GET') {
+            function fromCache(request) {
+                return caches.open(dynamicCache).then(cache => {
+                    return cache.match(request).then(cachedResponse => {
+                        if (cachedResponse) {
+                            return cachedResponse;
+                        }
+
+                        throw 'Should not reach here';
+                    })
+                });
+            }
+
             event.respondWith(
                 fetch(event.request)
                     .then(response => {
@@ -96,15 +108,13 @@ self.addEventListener('fetch', function(event) {
                         }
 
                         // then cache
-                        return caches.open(dynamicCache).then(cache => {
-                            return cache.match(request).then(cachedResponse => {
-                                if (cachedResponse) {
-                                    return cachedResponse;
-                                }
-                            })
-                        })
+                        return fromCache(req);
                     })
-                    .catch(console.error)
+                    .catch(() => {
+                        // if fetch failed due to whatever reason
+                        // try again from cache
+                        return fromCache(req);
+                    })
             );
         }
     }
