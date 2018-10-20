@@ -1,6 +1,6 @@
 importScripts('js/sw/deferred_requests.js');
 
-const appVersion   = 'v3';
+const appVersion   = 'v1';
 const appCache     = 'restaurant-app-' + appVersion;
 const dynamicCache = 'restaurant-content-' + appVersion;
 const allCaches    = [

@@ -464,11 +464,19 @@ textarea {
   position: relative;
   display: inline-block;
   width: 60px;
-  height: 34px;
+  height: 28px;
 }
 
 /* Hide default HTML checkbox */
 .switch input {display:none;}
+
+#favorite-label {
+    padding-bottom: 5px;
+    padding-left: 5px;
+    font-size: 20px;
+    color: #8A0082;
+    position: absolute;
+}
 
 /* The slider */
 .slider {
@@ -486,7 +494,7 @@ textarea {
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
+  height: 20px;
   width: 26px;
   left: 4px;
   bottom: 4px;
