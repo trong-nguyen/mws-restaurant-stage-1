@@ -3,7 +3,7 @@ DEFERRED REQUEST RECIPE FROM
 https://github.com/mozilla/serviceworker-cookbook/blob/master/request-deferrer/service-worker.js
 */
 
-importScripts('dist/idb.js');
+importScripts('js/dist/idb.js');
 
 class DeferredQueue {
   constructor(mainDb) {

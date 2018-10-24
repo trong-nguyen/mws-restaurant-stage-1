@@ -7,11 +7,11 @@ A directory that lists restaurants in a couple of neiborhoods with detail inform
 
 ## Prerequisites
 
-You will need a web server to serve the website. For testing purposes, you can user `SimpleHTTPServer` from `python`
+You will need node and npm installed to be able to build and serve using the included webserver
 
 ## Install
 
-No install is required. The website can be served out of the box.
+- Install dependencies to build `npm install`
 
 ## Deployment
 

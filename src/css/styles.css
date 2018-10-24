@@ -434,7 +434,7 @@ textarea {
   display         : block;
   float           : right;
   position        : relative;
-  background      : url('star-off.svg');
+  background      : url('/img/star-off.svg');
   background-size : contain;
 }
 
@@ -443,7 +443,7 @@ textarea {
   display         : block;
   width           : 1.5em;
   height          : 1.5em;
-  background      : url('star-on.svg');
+  background      : url('/img/star-on.svg');
   background-size : contain;
   opacity         : 0;
   transition      : opacity 0.2s linear;

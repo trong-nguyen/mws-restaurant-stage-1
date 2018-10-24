@@ -1,6 +1,6 @@
 importScripts('js/sw/deferred_requests.js');
 
-const appVersion   = 'v1';
+const appVersion   = 'v2';
 const appCache     = 'restaurant-app-' + appVersion;
 const dynamicCache = 'restaurant-content-' + appVersion;
 const allCaches    = [
@@ -15,9 +15,8 @@ const appCacheFiles = [
     '/js/main.js',
     '/js/restaurant_info.js',
     '/js/dbhelper.js',
+    '/js/dist/idb.js',
     '/css/styles.css',
-    // '/data/restaurants.json',
-    '/dist/idb.js',
     'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css',
     'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'
 ];
