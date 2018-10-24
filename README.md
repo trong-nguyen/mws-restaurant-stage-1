@@ -1,5 +1,5 @@
-MWS - Restaurant Project Stage 1
-==========================================
+MWS - Restaurant Project
+========================
 
 ## Descriptions
 
